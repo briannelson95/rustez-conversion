@@ -11,14 +11,14 @@ Image converter built in Rust. The intended use of this converter is to convert 
 - [x] Allow user to select image from their file browser
 - [x] Show filepath when image is selected
 - [x] Show preview of image
-- [ ] Allow user to select what file type they want to convert the image to
+- [x] Allow user to select what file type they want to convert the image to
     - [ ] Detect what type of image the target file is
     - [ ] Handle errors for same type conversion
-- [ ] Convert image
-    - [ ] Converted images should be saved as a copy to the directory the target image comes from unless specified
-    - [ ] Converted images should keep the name of the original file but with the new extension unless specified
-- [ ] Allow user to select the directory to save the new image to
-- [ ] Allow users to change the name of the converted file before conversion
+- [x] Convert image
+    - [x] Converted images should be saved as a copy to the directory the target image comes from unless specified
+    - [x] Converted images should keep the name of the original file but with the new extension unless specified
+- [x] Allow user to select the directory to save the new image to
+- [x] Allow users to change the name of the converted file before conversion
 
 ### Batch Conversion
 - [ ] Build UI for batch converstion
@@ -32,13 +32,15 @@ Image converter built in Rust. The intended use of this converter is to convert 
 
 #### QOL Imporvements to Consider
 - Allow the ability to set the quality of the converted image (dependant on the format)
+- image formats to .ico
+- pdf formates to images
 
 *...more to come*
 
 ### Supported Conversions
-- JPG/JPEG to PNG
-- JPG/JPEG to WebP
-- PNG to JPG/JPEG
-- PNG to WebP
-- WebP to PNG
-- WebP to JPG/JPEG
+- [x] JPG/JPEG to PNG
+- [ ] JPG/JPEG to WebP
+- [ ] PNG to JPG/JPEG
+- [ ] PNG to WebP
+- [ ] WebP to PNG
+- [ ] WebP to JPG/JPEG
