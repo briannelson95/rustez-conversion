@@ -12,13 +12,15 @@ Image converter built in Rust. The intended use of this converter is to convert 
 - [x] Show filepath when image is selected
 - [x] Show preview of image
 - [x] Allow user to select what file type they want to convert the image to
-    - [ ] Detect what type of image the target file is
-    - [ ] Handle errors for same type conversion
+    - [x] Detect what type of image the target file is
 - [x] Convert image
     - [x] Converted images should be saved as a copy to the directory the target image comes from unless specified
     - [x] Converted images should keep the name of the original file but with the new extension unless specified
 - [x] Allow user to select the directory to save the new image to
 - [x] Allow users to change the name of the converted file before conversion
+- [ ] Handle errors for same type conversion
+    - [ ] Allow for additional options (qual/size)
+    - [ ] If nothing is changed, user shouldn't be able to convert `"No changes were made"`
 
 ### Batch Conversion
 - [ ] Build UI for batch converstion
@@ -39,8 +41,8 @@ Image converter built in Rust. The intended use of this converter is to convert 
 
 ### Supported Conversions
 - [x] JPG/JPEG to PNG
-- [ ] JPG/JPEG to WebP
-- [ ] PNG to JPG/JPEG
-- [ ] PNG to WebP
-- [ ] WebP to PNG
-- [ ] WebP to JPG/JPEG
+- [x] JPG/JPEG to WebP
+- [x] PNG to JPG/JPEG
+- [x] PNG to WebP
+- [x] WebP to PNG
+- [x] WebP to JPG/JPEG

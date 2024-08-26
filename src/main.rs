@@ -14,6 +14,7 @@ struct ImageConverterApp {
     output_filename: String,
     image_thumbnail: Option<egui::TextureHandle>,
     conversion_status: Option<String>,
+    selected_conversion: String,
 }
 
 impl eframe::App for ImageConverterApp {
@@ -63,13 +64,50 @@ impl eframe::App for ImageConverterApp {
                 // Convert button with icon, aligned to the right
                 ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                     if convert_button(ui).clicked() {
-                        let output_file = format!("{}/{}.png", self.output_path, self.output_filename);
-                        match conversions::convert_jpg_to_png(&self.selected_file, &output_file) {
-                            Ok(_) => {
-                                self.conversion_status = Some("Conversion successful!".to_string());
+                        let output_file = format!("{}/{}.{}", self.output_path, self.output_filename, self.selected_conversion.to_lowercase());
+                        
+                        match self.selected_conversion.as_str() {
+                            "PNG" => {
+                                if self.selected_file.ends_with(".jpg") || self.selected_file.ends_with(".jpeg") {
+                                    match conversions::convert_jpg_to_png(&self.selected_file, &output_file) {
+                                        Ok(_) => self.conversion_status = Some("Conversion successful!".to_string()),
+                                        Err(err) => self.conversion_status = Some(format!("Error: {}", err)),
+                                    }
+                                } else if self.selected_file.ends_with(".webp") {
+                                    match conversions::convert_webp_to_png(&self.selected_file, &output_file) {
+                                        Ok(_) => self.conversion_status = Some("Conversion successful!".to_string()),
+                                        Err(err) => self.conversion_status = Some(format!("Error: {}", err)),
+                                    }
+                                }
                             }
-                            Err(err) => {
-                                self.conversion_status = Some(format!("Error: {}", err));
+                            "JPG" => {
+                                if self.selected_file.ends_with(".png") {
+                                    match conversions::convert_png_to_jpg(&self.selected_file, &output_file) {
+                                        Ok(_) => self.conversion_status = Some("Conversion successful!".to_string()),
+                                        Err(err) => self.conversion_status = Some(format!("Error: {}", err)),
+                                    }
+                                } else if self.selected_file.ends_with(".webp") {
+                                    match conversions::convert_webp_to_jpg(&self.selected_file, &output_file) {
+                                        Ok(_) => self.conversion_status = Some("Conversion successful!".to_string()),
+                                        Err(err) => self.conversion_status = Some(format!("Error: {}", err)),
+                                    }
+                                }
+                            }
+                            "WebP" => {
+                                if self.selected_file.ends_with(".jpg") || self.selected_file.ends_with(".jpeg") {
+                                    match conversions::convert_jpg_to_webp(&self.selected_file, &output_file) {
+                                        Ok(_) => self.conversion_status = Some("Conversion successful!".to_string()),
+                                        Err(err) => self.conversion_status = Some(format!("Error: {}", err)),
+                                    }
+                                } else if self.selected_file.ends_with(".png") {
+                                    match conversions::convert_png_to_webp(&self.selected_file, &output_file) {
+                                        Ok(_) => self.conversion_status = Some("Conversion successful!".to_string()),
+                                        Err(err) => self.conversion_status = Some(format!("Error: {}", err)),
+                                    }
+                                }
+                            }
+                            _ => {
+                                self.conversion_status = Some("Unsupported conversion type.".to_string());
                             }
                         }
                     }
@@ -86,31 +124,47 @@ impl eframe::App for ImageConverterApp {
 
             ui.separator();
 
-            // Conversion Frame
-            ui.horizontal(|ui| {
-                ui.vertical(|ui| {
-                    // Conversion options (left column)
-                    ui.label("Format:");
-                    egui::ComboBox::from_label("")
-                        .width(250.0)
-                        .selected_text("PNG".to_string())
-                        .show_ui(ui, |ui| {
-                            ui.selectable_value(&mut String::from("PNG"), "PNG".to_string(), "PNG");
-                            ui.selectable_value(&mut String::from("JPG"), "JPG".to_string(), "JPG");
-                            ui.selectable_value(&mut String::from("WebP"), "WebP".to_string(), "WebP");
+            // Frame for conversion options and preview
+            let margin = 8.0;
+            let padding = 10.0;
+            egui::Frame::none()
+                .fill(ui.visuals().extreme_bg_color) // Set the background color of the frame (grey in dark mode, light grey in light mode)
+                .rounding(egui::Rounding::same(8.0))
+                .outer_margin(margin)
+                .inner_margin(padding) // Use the tuple for margins
+                .show(ui, |ui| {
+                    ui.vertical_centered(|ui| {
+                        ui.set_min_height(ui.available_height() - 50.0); // Adjust the height of the frame
+
+                        ui.horizontal(|ui| {
+                            // Conversion options (left column, 1/3 of the frame)
+                            ui.vertical(|ui| {
+                                ui.label("Format:");
+                                egui::ComboBox::from_label("")
+                                    .width(250.0)
+                                    .selected_text(self.selected_conversion.clone())
+                                    .show_ui(ui, |ui| {
+                                        ui.selectable_value(&mut self.selected_conversion, "PNG".to_string(), "PNG");
+                                        ui.selectable_value(&mut self.selected_conversion, "JPG".to_string(), "JPG");
+                                        ui.selectable_value(&mut self.selected_conversion, "WebP".to_string(), "WebP");
+                                    });
+                            
+                                // Future settings space
+                            });
+
+                            // Image preview (right column, 2/3 of the frame)
+                            ui.vertical(|ui| {
+                                ui.label("Preview:");
+                                if let Some(thumbnail) = &self.image_thumbnail {
+                                    ui.allocate_space(ui.available_size());
+                                    ui.image(thumbnail); // Display the thumbnail
+                                } else {
+                                    ui.allocate_space(ui.available_size()); // Occupy the space even if no image is selected
+                                }
+                            });
                         });
-
-                    // Future settings space
+                    });
                 });
-
-                ui.vertical(|ui| {
-                    // Image preview (right column)
-                    ui.label("Preview:");
-                    if let Some(thumbnail) = &self.image_thumbnail {
-                        ui.image(thumbnail); // Display the thumbnail
-                    }
-                });
-            });
 
             ui.separator();
 
