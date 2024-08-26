@@ -19,8 +19,16 @@ pub fn toggle_button(ui: &mut egui::Ui, is_active: bool, label: &str) -> bool {
 }
 
 pub fn convert_button(ui: &mut egui::Ui) -> egui::Response {
-    let text = egui::RichText::new("Convert").color(egui::Color32::WHITE);
+    let text = egui::RichText::new("▶ Convert").color(egui::Color32::WHITE);
     ui.add_sized(
         [80.0, 25.0],
         egui::Button::new(text).fill(egui::Color32::from_rgb(60, 100, 205)))
+}
+
+pub fn open_image_button(ui: &mut egui::Ui) -> egui::Response {
+    let text = egui::RichText::new("🖼️ Open Image").color(egui::Color32::WHITE);
+    ui.add_sized(
+        [80.0, 25.0], 
+        egui::Button::new(text)
+    )
 }
