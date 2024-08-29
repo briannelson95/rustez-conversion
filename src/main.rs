@@ -47,7 +47,7 @@ impl eframe::App for ImageConverterApp {
 
                         // Load image thumbnail
                         if let Ok(image) = image::open(&self.selected_file) {
-                            let thumbnail = image.thumbnail(300, 300);
+                            let thumbnail = image.thumbnail(400, 300);
                             let color_image = egui::ColorImage::from_rgba_unmultiplied(
                                 [thumbnail.width() as usize, thumbnail.height() as usize],
                                 &thumbnail.to_rgba8(),
@@ -116,10 +116,14 @@ impl eframe::App for ImageConverterApp {
 
             ui.separator();
 
-            // Source Path
+            // Source Path///////////////////////////
             ui.horizontal(|ui| {
-                ui.label("Source:");
-                ui.add(egui::TextEdit::singleline(&mut self.selected_file).desired_width(f32::INFINITY));
+                egui::Frame::none()
+                    .outer_margin(8.0)
+                    .show(ui, |ui| {
+                        ui.label("Source:");
+                        ui.add(egui::TextEdit::singleline(&mut self.selected_file).desired_width(f32::INFINITY));
+                    });
             });
 
             ui.separator();
